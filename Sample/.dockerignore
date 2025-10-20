@@ -1,0 +1,7 @@
+# Ignore everything except bin/Debug/net472
+**
+!bin/Debug/net472/
+obj/
+.vs/
+*.user
+*.suo
