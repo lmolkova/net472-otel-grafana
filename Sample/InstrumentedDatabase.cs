@@ -7,7 +7,10 @@ using System.Collections.Generic;
 using StackExchange.Redis;
 namespace sample
 {
-    class InstrumentedDatabase
+
+    // A simple wrapper around StackExchange.Redis IDatabase to instrument a few Redis commands (GET and SET) with OpenTelemetry.
+    // Any other commands can be added similarly as needed.
+    internal class InstrumentedDatabase
     {
         private static readonly ActivitySource RedisSource = new ActivitySource("Redis");
         private static readonly Meter RedisMeter = new Meter("Redis");

@@ -42,10 +42,12 @@ namespace sample
                 .AddRuntimeInstrumentation()
                 .AddOtlpExporter((exporterOpt, metricReaderOpt) =>
                 {
+                    // configure exporter if needed, setting to 5 sec here for demo purposes
                     metricReaderOpt.PeriodicExportingMetricReaderOptions.ExportIntervalMilliseconds = 5000;
                 })
                 .Build();
 
+            // initialize S3 client to local emulator
             s3Client = new AmazonS3Client("minioadmin", "minioadmin", new AmazonS3Config
             {
                 ServiceURL = "http://localhost:9000",
@@ -54,6 +56,8 @@ namespace sample
             });
 
             redis = ConnectionMultiplexer.Connect("localhost");
+
+            // wrap Redis database with instrumentation
             redisDb = new InstrumentedDatabase(redis.GetDatabase());
         }
 
