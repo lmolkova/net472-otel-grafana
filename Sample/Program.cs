@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Amazon.S3;
+using Amazon.S3.Model;
 using OpenTelemetry;
-using System.Diagnostics;
-using OpenTelemetry.Trace;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
-using System.Threading;
+using OpenTelemetry.Trace;
 using StackExchange.Redis;
-using Amazon.S3;
-using Amazon.S3.Model;
-using System.Threading.Tasks;
+using System;
+using System.Diagnostics;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace sample
 {
@@ -21,7 +21,7 @@ namespace sample
         private readonly IAmazonS3 s3Client;
 
         private readonly ConnectionMultiplexer redis;
-        private readonly InstrumentedDatabase redisDb;
+        private readonly IDatabase redisDb;
 
         public Program()
         {
