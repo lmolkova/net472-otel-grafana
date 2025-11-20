@@ -10,6 +10,7 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using System.Threading.Tasks;
 using System.IO;
+using NLog;
 
 namespace sample
 {
@@ -22,10 +23,10 @@ namespace sample
 
         private readonly ConnectionMultiplexer redis;
         private readonly InstrumentedDatabase redisDb;
-
+        private readonly NLog.Logger logger;
         public Program()
         {
-            tracerProvider = Sdk.CreateTracerProviderBuilder()
+            /*tracerProvider = Sdk.CreateTracerProviderBuilder()
                 .ConfigureResource(r => r.AddService("sample"))
                 .AddSource("Main")
                 .AddSource("Redis")
@@ -45,7 +46,7 @@ namespace sample
                     // configure exporter if needed, setting to 5 sec here for demo purposes
                     metricReaderOpt.PeriodicExportingMetricReaderOptions.ExportIntervalMilliseconds = 5000;
                 })
-                .Build();
+                .Build();*/
 
             // initialize S3 client to local emulator
             s3Client = new AmazonS3Client("minioadmin", "minioadmin", new AmazonS3Config
@@ -59,6 +60,9 @@ namespace sample
 
             // wrap Redis database with instrumentation
             redisDb = new InstrumentedDatabase(redis.GetDatabase());
+
+            logger = LogManager.GetLogger("Program");
+            logger.Info("Program initialized");
         }
 
         public static int Main(string[] args)
@@ -75,7 +79,7 @@ namespace sample
                     {
                         program.StoreDataAsync(bucketName, key, content).GetAwaiter().GetResult();
                         content = program.RetrieveDataAsync(bucketName, key).GetAwaiter().GetResult();
-                        Console.WriteLine($"Retrieved key: '{key}' content: '{content}'");
+                        program.logger.Info($"Retrieved key: '{key}' content: '{content}'");
                     }
                     Thread.Sleep(1000);
                 }
